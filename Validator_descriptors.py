@@ -65,13 +65,22 @@ class AccountNumber:
             print('Account number successfully added.')
 
 
-class Customer:
-    num = PhoneNumber('num')
+class Date:
+    def __init__(self, date: str):
+        self.date = date
+        self.pattern = r'^(0[1-9]|[12][0-9]|3[01])\.(0[1-9]|1[0-2])\.\d{4}$'
+        self.regex = re.compile(self.pattern)
 
-    def __init__(self, num):
-        self.num = num
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+        if self.date in instance.__dict__:
+            return instance.__dict__[self.date]
+        else:
+            raise KeyError(f"Date was not added.")
 
-
-if __name__ == '__main__':
-    customer1 = Customer('444838673')
-    print(customer1.num)
+    def __set__(self, instance, value):
+        if not self.regex.match(value):
+            print("Wrong date format!")
+        else:
+            instance.__dict__[self.date] = value
